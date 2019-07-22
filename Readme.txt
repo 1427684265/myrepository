@@ -41,6 +41,12 @@ git status
 红色：尚未被暂存
 绿色：已经被暂存（尚未被提交）
 
+git add .
+git add *.*
+git add --all
+git add -A
+
+
 取消被暂存的文件（因为可能还要继续编辑，代码没写完）
 git rm --cached style.css
 
