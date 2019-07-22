@@ -41,12 +41,6 @@ git status
 红色：尚未被暂存
 绿色：已经被暂存（尚未被提交）
 
-git add .
-git add *.*
-git add --all
-git add -A
-
-
 取消被暂存的文件（因为可能还要继续编辑，代码没写完）
 git rm --cached style.css
 
@@ -68,6 +62,8 @@ git config user.email
 git config user.name
 
 或者
+设置全局仓库的提交用户（当前主机上的所有仓库都共享的姓名和邮箱）
+在当前仓库没有设置提交用户时，就使用全局的！
 git config --global user.name "itany"
 git config --global user.email "itany@163.com"
 查看全局的提交用户
@@ -76,14 +72,107 @@ git config --global user.name
 
 git config --global -l
 
-全局仓库的提交用户（当前主机上的所有仓库都共享的姓名和邮箱）
-在当前仓库没有设置提交用户时，就使用全局的！
-
 --------------------------------------------------------------------------------
 
-commit就是将所有暂存区内容写入仓库区（不能再检出某些提交）
+commit  暂存区内容写入仓库区（不能再捡出某些提交——暂存区必须全部提交）
+git commit -m "init project"
 
+删除仓库中的文件
+方法一：
+1、先从文件系统中删掉
+del src\c.txt
+2、通知暂存,该文件被删除
+git add .
+3、提交,通知仓库区也同步删除
+git commit -m "del src\c.txt"
 
+方法二：
+1、直接通过git的rm命令，删除仓库和工作区文件（这时暂存区已经知道该文件被移除）
+git rm src\b.txt
+2、直接提交即可
+git commit -m "del src\b.txt"
 
+重命名文件
+1、先把工作区文件重命名
+move style.css mystyle.css
+2、加入暂存区
+git add .（或者git add 重命名前的文件名，再git add 重命名后的文件名，git也会自动侦测出这是一个rename操作）
+3、提交通知仓库区同步
+git commit -m "rename style.css to mystyle.css"
+
+---------------------------------------------------------------------------
+
+实现三个区之间的文件比较
+
+仓库区 ： <hr />
+工作区 ： <hr color="blue" />
+暂存区 ： <hr color="red" />
+
+比较暂存区和工作区
+git diff hello.htm
+
+比较暂存区和仓库区
+git diff --cached hello.htm
+
+比较工作区和仓库区
+git diff HEAD hello.htm
+
+总结：在进行比较时，颜色为绿色的是两个比较区离你近的区，相对远的是红色！
+
+-------------------------------------------------------------------------------
+
+日志查看
+git log（内容包括提交的id，用户，邮箱，时间，内容注释）
+
+筛选最近的3条日志
+git log -3
+
+查看指定用户的提交
+git log --author yufeng
+
+查看指定时间之后的日志
+git log --after "Mon Jul 22 14:40:00 2019 +0800"
+
+查看指定时间之前的日志
+git log --before "Mon Jul 22 14:40:00 2019 +0800"
+
+查看指定时间段内的日志
+git log --before "Mon Jul 22 14:50:00 2019 +0800" --after "Mon Jul 22 14:40:00 2019 +0800"
+
+查看指定时间段内某个用户的日志
+git log --before "Mon Jul 22 14:50:00 2019 +0800" --after "Mon Jul 22 14:40:00 2019 +0800" --author yufeng
+
+-----------------------------------------------------------------------------
+
+代码的回溯
+
+先通过查看日志，定位你要回溯的提交id
+git log --pretty=oneline
+
+使用reset回溯整个工作区
+=====================
+1、取消工作区的任何改动，回溯到仓库区的最新版
+git reset --hard
+
+2、将工作区回溯到仓库区的指定提交
+git reset --hard d4cec9
+
+使用checkout回溯某个文件
+======================
+3、只将某个文件回溯到仓库的最新版
+git checkout -- hello.htm
+
+4、只将某个文件回溯到仓库的指定版
+git checkout 09285c -- hello.htm
+
+注意：
+    如果你现在在当今社会，回到了明朝，那么你通过git log看不见清朝历史！
+    只能通过git reflog查看所有的时间轴，才能看见清朝的时间点！
+    再通过如下命令从明朝进入到清朝！
+    git reset --hard 27de118
+
+总结：使用git可以任意往前或者往后回溯！
+
+---------------------------------------------------------------------------------
 
 
